@@ -25,11 +25,16 @@
         </div>
     </div>
 
+    <header>
+        <h1 class="logo">Cast Media</h1>
+    </header>
+
 
 
 
 
 
     </div>
+    <!--<script src="loading.js"></script> -->
 </body>
 </html>
