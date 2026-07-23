@@ -1,51 +1,39 @@
 <?php 
 
-$cann = mysqli_connect("localhost" , "root" , "" , "castdb");
+    $cann = mysqli_connect('localhost' , 'root' , '' , 'gallery_db');
 
-if(!$cann){
-    die("Connection Failed");
-}
+    if(!$cann){
+        die("Connection Failed");
+    }
 
+    $error = false;
+    $lack = "";
 
-$error = false;
-$lack = '';
+    if($_SERVER['REQUEST_METHOD'] == "POST"){
+        if(empty($_FILES['profile_path']['name']) || empty($_POST['username']) || empty($_POST['password'])){
 
-
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-  
-
-        if(empty($_POST['username']) || empty($_POST['password']) || empty($_FILES['profilePfp']['name'])){
-
-            $lack =  'inputs cannot be empty.';
             $error = true;
+            $lack = "You need to input these information to continue";
 
         }
 
-    
+        if(!$error){
 
-    if(!$error){
 
+        $profile_path = $_FILES['profile_path']['name'];
         $username = $_POST['username'];
         $password = $_POST['password'];
-        $profilePfp = $_FILES['profilePfp']['name']; 
-        // IMPORTANT! ['name'] arun ang ma send sa sql kay ang file name sa input
+        
+            $sql = "INSERT INTO users (profile_path, username, password)
+            VALUES ('$profile_path' , '$username' , '$password')";
 
-    $sql = "INSERT INTO users (username , password , img_path) 
-                    VALUES ('$username' , '$password' , '$profilePfp')";
+        mysqli_query($cann , $sql);
 
-    mysqli_query($cann , $sql);
+        header("Location: login.php");
+        exit();
 
-    header("Location: ../login/login.php");
-    exit();
-
-     }
-
-} 
-
-   
-
-
+        }
+    }
 
 ?>
 
@@ -54,33 +42,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign up CAST</title>
-
-   <link rel="stylesheet" href="signup.css">
+    <title>Sign up</title>
 </head>
 <body>
-    <div class="body">
-        <form method="post" enctype="multipart/form-data">
-            <h1>Create Account</h1>
-            <input type="text" name="username" placeholder="Enter a name"> <br>
-            <input type="password" name="password" placeholder="Create a password">
-            <br> <br>
+  
+<form  method="post" enctype="multipart/form-data">
 
-         
-           
+    <label for="profile_path">Upload a photo</label>
+    <input type="file" name="profile_path">
+    <input type="text" name="username" placeholder="Create a username">
+    <br>
+    <input type="password" name="password" placeholder="Create a password">
+    <button type="submit">Submit</button>
+</form>
 
-            <div class="signup2">
-                <h2>Enter profile picture</h2>
-                <input type="file"  name="profilePfp">
-            </div>
-
-            <p><?php echo $lack; ?></p>
-
-            <button type="submit">Create Account</button>
-        </form>
-
-    </div>
-
-   
 </body>
 </html>
